@@ -1,14 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package sistemaacademico;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +21,7 @@ public class SistemaAcademico {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
         Scanner sc = new Scanner(System.in);
 
         ArrayList<Materia> materias = new ArrayList<Materia>();
@@ -73,6 +72,21 @@ public class SistemaAcademico {
                          System.out.println("El alumno ha sido desmatriculado exitosamente");
 
                         }
+            //Gestionar asistencia
+            else if (opcionSeleccionadaGM == 3) {
+                
+                        //fecha
+                        System.out.println("Ingrese la fecha de la clase (dd/MM/yyyy):");
+                        String fechaAsis = sc.nextLine();
+                        LocalDate fecha = LocalDate.parse(fechaAsis, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                        
+                         System.out.println("Ingrese el id del alumno a cargar asistencia");
+                          int idAlumno = sc.nextInt();
+                         sc.nextLine();
+                         
+                        GestionarAsistencia(fecha, m1,idAlumno);
+                     
+                        }
               else if (opcionSeleccionadaGM == 4) {
                 System.out.println("\n--- ALUMNOS INSCRIPTOS EN " + m1.getNombreMateria() + " ---");
                 m1.mostrarListadosInscriptos();
@@ -90,6 +104,7 @@ public class SistemaAcademico {
     }
     }
     
+    // MENUS 
     public static void MenuGestionarMateria() {
         System.out.println("MENÚ GESTIONAR MATERIA\n"
                 + "==========================\n"
@@ -110,6 +125,8 @@ public class SistemaAcademico {
                 + "9.- Salir\n"
                 + "Ingrese una opción:");
     }
+    
+    //GESTION DE ALUMNOS
 
     public static void MatricularAlumno(Materia materia, Scanner sc) {
         try {
@@ -143,6 +160,18 @@ public class SistemaAcademico {
     public static void DesmatricularAlumnos(int nroLegajo, Materia materia) {
         materia.desmatricularAlumno(nroLegajo);
         System.out.println("El alumno ha sido desmatriculado exitosamente");
+    }
+    
+    //GESTION ASISTENCIA ALUMNOS
+    public static void GestionarAsistencia(LocalDate fecha, Materia m ,int idAlumnoBuscado){
+       
+        
+       Alumno alumnoAsistente = m.buscarAlumnosId(idAlumnoBuscado);
+        
+       Asistencia asistencia = new Asistencia(fecha, m);
+       
+       asistencia.cargarAsistencia(alumnoAsistente);
+       
     }
 
 }
