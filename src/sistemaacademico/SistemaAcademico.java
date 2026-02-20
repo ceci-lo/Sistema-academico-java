@@ -1,4 +1,3 @@
-
 package sistemaacademico;
 
 import java.text.ParseException;
@@ -42,6 +41,8 @@ public class SistemaAcademico {
             Materia m1 = new Materia(idMat, nomMat);
             materias.add(m1);
 
+            ArrayList<Asistencia> asistencias = new ArrayList<Asistencia>();
+
             System.out.println("Usted ha creado la materia : " + nomMat + " exitosamente. \n");
             int opcionSeleccionadaGM;
             do {
@@ -61,49 +62,71 @@ public class SistemaAcademico {
                     } while (nro == 1);
 
                     System.out.println("Finalizó la matriculación de alumnos.\n");
-                }
-                //Desmatricular alumnos
-            else if (opcionSeleccionadaGM == 2) {
-                        System.out.println("Ingrese el nro de legajo del alumno a desmatricular");
-                        int nroLegajo = sc.nextInt();
-                        sc.nextLine();
+                } //Desmatricular alumnos
+                else if (opcionSeleccionadaGM == 2) {
+                    System.out.println("Ingrese el nro de legajo del alumno a desmatricular");
+                    int nroLegajo = sc.nextInt();
+                    sc.nextLine();
 
-                        DesmatricularAlumnos(nroLegajo, m1);
-                         System.out.println("El alumno ha sido desmatriculado exitosamente");
+                    DesmatricularAlumnos(nroLegajo, m1);
+                    System.out.println("El alumno ha sido desmatriculado exitosamente");
 
+                } //Gestionar asistencia
+                else if (opcionSeleccionadaGM == 3) {
+
+                    //fecha
+                    System.out.println("Ingrese la fecha de la clase (dd/MM/yyyy):");
+                    String fechaAsis = sc.nextLine();
+                    LocalDate fecha = LocalDate.parse(fechaAsis, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+                    System.out.println("Ingrese el id del alumno a cargar asistencia");
+                    int idAlumno = sc.nextInt();
+                    sc.nextLine();
+                    Asistencia AsistenciaDelDia = GestionarAsistencia(fecha, m1, idAlumno);
+                    asistencias.add(AsistenciaDelDia);
+                    System.out.println("Usted ha cargado la asistencia del dia exitosamente.");
+
+                } //Listado de todos los inscriptos
+                else if (opcionSeleccionadaGM == 4) {
+                    System.out.println("\n--- ALUMNOS INSCRIPTOS EN " + m1.getNombreMateria() + " ---");
+                    m1.mostrarListadosInscriptos();
+                    System.out.println();
+                } //mostrar asistencia
+                else if (opcionSeleccionadaGM == 5) {
+                    asistencias.forEach(fecha -> System.out.println(fecha.getFecha()));
+
+                    System.out.println("\n--- Elegir una fecha para ver las asistencias");
+
+                    System.out.println("Ingrese la fecha de la clase (dd/MM/yyyy):");
+                    String fechaAsis = sc.nextLine();
+                    LocalDate fecha = LocalDate.parse(fechaAsis, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+                    // Buscar la asistencia que coincida con esa fecha
+                    Asistencia asistenciaEncontrada = null;
+                    for (Asistencia a : asistencias) {
+                        if (a.getFecha().equals(fecha)) {
+                            asistenciaEncontrada = a;
+                            break;
                         }
-            //Gestionar asistencia
-            else if (opcionSeleccionadaGM == 3) {
-                
-                        //fecha
-                        System.out.println("Ingrese la fecha de la clase (dd/MM/yyyy):");
-                        String fechaAsis = sc.nextLine();
-                        LocalDate fecha = LocalDate.parse(fechaAsis, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                        
-                         System.out.println("Ingrese el id del alumno a cargar asistencia");
-                          int idAlumno = sc.nextInt();
-                         sc.nextLine();
-                         
-                        GestionarAsistencia(fecha, m1,idAlumno);
-                     
-                        }
-              else if (opcionSeleccionadaGM == 4) {
-                System.out.println("\n--- ALUMNOS INSCRIPTOS EN " + m1.getNombreMateria() + " ---");
-                m1.mostrarListadosInscriptos();
-                System.out.println();
-            }
-            //Opcion Salir
-            else if (opcionSeleccionada == 9) {
-
-                        System.out.println("Usted ha salido del menu inicio. Muchas Gracias.");
-
                     }
+                    // Mostrar resultado
+                    if (asistenciaEncontrada != null) {
+                        System.out.println("Asistencias del día " + fecha + ":");
+                        System.out.println(asistenciaEncontrada); // o lo que quieras mostrar
+                    } else {
+                        System.out.println("No hay asistencia registrada para esa fecha.");
+                    }
+                } //Opcion Salir
+                else if (opcionSeleccionada == 9) {
+
+                    System.out.println("Usted ha salido del menu inicio. Muchas Gracias.");
+
+                }
+            } while (opcionSeleccionada != 9);
+            sc.close();
         }
-        while (opcionSeleccionada != 9);
-        sc.close();
     }
-    }
-    
+
     // MENUS 
     public static void MenuGestionarMateria() {
         System.out.println("MENÚ GESTIONAR MATERIA\n"
@@ -125,9 +148,8 @@ public class SistemaAcademico {
                 + "9.- Salir\n"
                 + "Ingrese una opción:");
     }
-    
-    //GESTION DE ALUMNOS
 
+    //GESTION DE ALUMNOS
     public static void MatricularAlumno(Materia materia, Scanner sc) {
         try {
 
@@ -150,7 +172,6 @@ public class SistemaAcademico {
 
             Alumno a = new Alumno(nroLegajo, apellido, nombre, fecha, email);
             materia.matricularAlumno(a);
-            
 
         } catch (ParseException ex) {
             Logger.getLogger(SistemaAcademico.class.getName()).log(Level.SEVERE, null, ex);
@@ -161,17 +182,16 @@ public class SistemaAcademico {
         materia.desmatricularAlumno(nroLegajo);
         System.out.println("El alumno ha sido desmatriculado exitosamente");
     }
-    
+
     //GESTION ASISTENCIA ALUMNOS
-    public static void GestionarAsistencia(LocalDate fecha, Materia m ,int idAlumnoBuscado){
-       
-        
-       Alumno alumnoAsistente = m.buscarAlumnosId(idAlumnoBuscado);
-        
-       Asistencia asistencia = new Asistencia(fecha, m);
-       
-       asistencia.cargarAsistencia(alumnoAsistente);
-       
+    public static Asistencia GestionarAsistencia(LocalDate fecha, Materia m, int idAlumnoBuscado) {
+
+        Alumno alumnoAsistente = m.buscarAlumnosId(idAlumnoBuscado);
+        Asistencia asistenciaDiaria = new Asistencia(fecha, m);
+
+        asistenciaDiaria.cargarAsistencia(alumnoAsistente);
+
+        return asistenciaDiaria;
     }
 
 }
