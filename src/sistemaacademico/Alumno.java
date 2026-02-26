@@ -8,7 +8,7 @@ import java.util.Date;
  *
  * @author rescatemio
  */
-public class Alumno {
+public class Alumno  {
     private int nroLegajo;//id
     private String apellido;
     private String nombre;
@@ -68,7 +68,7 @@ public class Alumno {
 
     @Override
     public String toString() {
-        return "Alumno: \n" + "nroLegajo=" + nroLegajo + "\napellido=" + apellido + "\nnombre=" + nombre + "\nfechaNacimiento=" + fechaNacimiento + "\nemail=" + email;
+        return "Alumno: \n" + "nroLegajo: " + nroLegajo + "\napellido: " + apellido + "\nnombre: " + nombre + "\nfechaNacimiento: " + fechaNacimiento + "\nemail: " + email;
     }
     
     

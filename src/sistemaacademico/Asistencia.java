@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  *
@@ -69,6 +70,31 @@ public class Asistencia {
         System.out.println("---------------------------------------------------------------\n");
         System.out.println("TOTAL ASISTENTES: " + alumnosAsistencia.size());
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Asistencia other = (Asistencia) obj;
+        if (!Objects.equals(this.fecha, other.fecha)) {
+            return false;
+        }
+        return true;
+    }
+    
     
     @Override
     public String toString() {
