@@ -73,26 +73,22 @@ public class SistemaAcademico {
 
                 } //Gestionar asistencia
                 else if (opcionSeleccionadaGM == 3) {
-                    int nro = 1;
-                    do {
+                    
                         //fecha
                         System.out.println("Ingrese la fecha de la clase (dd/MM/yyyy):");
                         String fechaAsis = sc.nextLine();
                         LocalDate fecha = LocalDate.parse(fechaAsis, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-                        System.out.println("Ingrese el id del alumno a cargar asistencia");
-                        int idAlumno = sc.nextInt();
-                        sc.nextLine();
-                        Asistencia AsistenciaDelDia = GestionarAsistencia(fecha, m1, idAlumno);
+                        //carga de asistentes a la materia por dia
+                        Asistencia AsistenciaDelDia = GestionarAsistencia(fecha, m1, sc);
                         asistencias.add(AsistenciaDelDia);
                         System.out.println("---------------------------------------------------");
                         System.out.println("Usted ha cargado la asistencia del dia exitosamente.");
-                        System.out.println("¿Desea cargar la asistencia de otro alumno?: \n1. si\n2. volver al menu GESTION MATERIA ");
+                       
                        System.out.println("---------------------------------------------------");
 
-                        nro = sc.nextInt();
-                        sc.nextLine();
-                    } while (nro == 1);
+                        
+                  
                 } //Listado de todos los inscriptos
                 else if (opcionSeleccionadaGM == 4) {
                     
@@ -120,18 +116,17 @@ public class SistemaAcademico {
                     }
                     // Mostrar resultado
                     if (asistenciaEncontrada != null) {
-                        System.out.println("Asistencias del día " + fecha + ":");
-                        System.out.println(asistenciaEncontrada); // o lo que quieras mostrar
+                        asistenciaEncontrada.mostrarListadosAsistencia();
                     } else {
                         System.out.println("No hay asistencia registrada para esa fecha.");
                     }
                 } //Opcion Salir
-                else if (opcionSeleccionada == 9) {
+                else if (opcionSeleccionadaGM == 9) {
 
                     System.out.println("Usted ha salido del menu inicio. Muchas Gracias.");
 
                 }
-            } while (opcionSeleccionada != 9);
+            } while (opcionSeleccionadaGM != 9);
             sc.close();
         }
     }
@@ -193,13 +188,18 @@ public class SistemaAcademico {
     }
 
     //GESTION ASISTENCIA ALUMNOS
-    public static Asistencia GestionarAsistencia(LocalDate fecha, Materia m, int idAlumnoBuscado) {
+    public static Asistencia GestionarAsistencia(LocalDate fecha, Materia m, Scanner sc) {
 
-        Alumno alumnoAsistente = m.buscarAlumnosId(idAlumnoBuscado);
-        Asistencia asistenciaDiaria = new Asistencia(fecha, m);
-
-        asistenciaDiaria.cargarAsistencia(alumnoAsistente);
-
+        Asistencia asistenciaDiaria = m.cargarAsistencia(fecha);
+        for(Alumno alumno : m.getAlumnosInscriptos()){
+            System.out.println("El alumno: "+ alumno.getApellido() + " "+ alumno.getNombre()+ " se encuentra presente? \n 1. si \n 2. no");
+            int respuesta = sc.nextInt();
+            sc.nextLine();
+            if(respuesta ==1 ){
+            asistenciaDiaria.cargarAsistencia(alumno);
+                    }
+            
+        }
         return asistenciaDiaria;
     }
 
