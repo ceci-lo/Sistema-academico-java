@@ -73,24 +73,33 @@ public class SistemaAcademico {
 
                 } //Gestionar asistencia
                 else if (opcionSeleccionadaGM == 3) {
+                    int nro = 1;
+                    do {
+                        //fecha
+                        System.out.println("Ingrese la fecha de la clase (dd/MM/yyyy):");
+                        String fechaAsis = sc.nextLine();
+                        LocalDate fecha = LocalDate.parse(fechaAsis, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-                    //fecha
-                    System.out.println("Ingrese la fecha de la clase (dd/MM/yyyy):");
-                    String fechaAsis = sc.nextLine();
-                    LocalDate fecha = LocalDate.parse(fechaAsis, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                        System.out.println("Ingrese el id del alumno a cargar asistencia");
+                        int idAlumno = sc.nextInt();
+                        sc.nextLine();
+                        Asistencia AsistenciaDelDia = GestionarAsistencia(fecha, m1, idAlumno);
+                        asistencias.add(AsistenciaDelDia);
+                        System.out.println("---------------------------------------------------");
+                        System.out.println("Usted ha cargado la asistencia del dia exitosamente.");
+                        System.out.println("¿Desea cargar la asistencia de otro alumno?: \n1. si\n2. volver al menu GESTION MATERIA ");
+                       System.out.println("---------------------------------------------------");
 
-                    System.out.println("Ingrese el id del alumno a cargar asistencia");
-                    int idAlumno = sc.nextInt();
-                    sc.nextLine();
-                    Asistencia AsistenciaDelDia = GestionarAsistencia(fecha, m1, idAlumno);
-                    asistencias.add(AsistenciaDelDia);
-                    System.out.println("Usted ha cargado la asistencia del dia exitosamente.");
-
+                        nro = sc.nextInt();
+                        sc.nextLine();
+                    } while (nro == 1);
                 } //Listado de todos los inscriptos
                 else if (opcionSeleccionadaGM == 4) {
-                    System.out.println("\n--- ALUMNOS INSCRIPTOS EN " + m1.getNombreMateria() + " ---");
-                    m1.mostrarListadosInscriptos();
-                    System.out.println();
+                    
+                        System.out.println("\n--- ALUMNOS INSCRIPTOS EN " + m1.getNombreMateria() + " ---");
+                        m1.mostrarListadosInscriptos();
+                        System.out.println();
+                   
                 } //mostrar asistencia
                 else if (opcionSeleccionadaGM == 5) {
                     asistencias.forEach(fecha -> System.out.println(fecha.getFecha()));
